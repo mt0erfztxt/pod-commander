@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: demo
+  name: commander
+spec:
+  containers:
+    - image: localhost:5000/mt0erfztxt/pod-commander-demo:latest
+      name: commander

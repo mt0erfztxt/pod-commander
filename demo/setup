@@ -1,0 +1,22 @@
+#!/bin/bash
+
+DIR=$(dirname $(readlink -f $0))
+
+cd $DIR
+
+openssl genrsa -out demouser.key 2048
+openssl req -new -key demouser.key -out demouser.csr -subj "/CN=demouser/O=demogroup"
+openssl x509 -req -in demouser.csr -CA ~/.minikube/ca.crt -CAkey ~/.minikube/ca.key -CAcreateserial -out demouser.crt -days 365
+
+minikube stop
+minikube delete
+minikube start --insecure-registry localhost:5000
+
+eval $(minikube docker-env)
+docker run -d -p 5000:5000 --restart=always --name=registry -v /data/docker-registry:/var/lib/registry registry:2
+
+kubectl create namespace demo
+kubectl config set-credentials demouser --client-certificate="$DIR/demouser.crt" --client-key="$DIR/demouser.key"
+kubectl config set-context demouser --cluster=minikube --namespace=demo --user=demouser
+kubectl create -f role-demouser.yml
+kubectl create -f rolebinding-demouser.yml

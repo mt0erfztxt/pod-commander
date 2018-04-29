@@ -1,0 +1,17 @@
+#!/bin/bash
+
+DIR=$(dirname $(readlink -f $0))
+
+cd $DIR
+
+kubectl delete -f pod-commander.yml --now
+kubectl delete -f pod-executor.yml --now
+
+./build
+
+sleep 5
+
+kubectl create -f pod-commander.yml
+kubectl create -f pod-executor.yml
+
+kubectl get pods --namespace=demo --watch

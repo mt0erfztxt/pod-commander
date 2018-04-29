@@ -2,6 +2,7 @@
 *.jar
 .hg/
 .hgignore
+/.idea
 /.lein-*
 /.nrepl-port
 /checkouts
@@ -9,5 +10,6 @@
 /demo/*.jar
 /demo/demouser.*
 /target
+pod-commander.iml
 pom.xml
 pom.xml.asc
